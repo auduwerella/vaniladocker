@@ -4,8 +4,15 @@ pathd=$(pwd)
 
 gitClone () {
  echo "Git Cloning"
- cd magento2 && git reset && git checkout 2.4-develop
+ cd magento2 && git checkout 2.4-develop && git reset
+ git pull
+ git fetch --all --tags --prune
  git checkout tags/$tagname
+if [ $? -ne 0 ]
+	then
+	echo "error on cloning the branch"
+	exit 34;
+fi
  cd ..
  if [ -d ./magento ]
  then rm -fr magento && mkdir magento
@@ -16,10 +23,10 @@ gitClone () {
                 echo "error cloning the repo"
                 exit 127
  fi
-	docker build -t amila/vanilla-magento:$tagname $pathd
+	docker build -t amila/vanilla-m2:$tagname $pathd
  if [ $? -eq 0 ]
         then
-                docker push amila/vanilla-magento:$tagname
+                docker push amila/vanilla-m2:$tagname
                 echo "or you can run it!"
 		exit 0;
  fi
